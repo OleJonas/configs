@@ -48,6 +48,12 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("ole.plugins")
 -- Keymaps
 
+-- Edit new file in same directory as current buffer
+-- vim.keymap.set("n", ":eh", ":e %:h/", {desc = "Write new file in current buffer's directory"})
+vim.keymap.set("n", ",e", ":e <C-R>=expand('%:p:h') . '/' <CR>")
+vim.keymap.set("n", ",t", ":tabe <C-R>=expand('%:p:h') . '/' <CR>")
+vim.keymap.set("n", ",s", ":vsplit <C-R>=expand('%:p:h') . '/' <CR>")
+-- vim.keymap.set("n", ":e<CR>", ":e %:p:ha")
 
 -- better up/down
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })

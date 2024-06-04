@@ -2,20 +2,23 @@ return {
 	{
 		"rose-pine/neovim",
 		name = "rose-pine",
+        --[[config = function()
+            vim.cmd("colorscheme rose-pine-dawn")
+        end]]--
 	},
 	{
         "catppuccin/nvim",
         name = "catppuccin",
         --priority = 1000,
-		--[[config = function()
+		config = function()
 			vim.cmd("colorscheme catppuccin-mocha")
-		end]]--
+		end
     },
     {
         "folke/tokyonight.nvim",
-        config = function()
+        --[[config = function()
 			vim.cmd("colorscheme tokyonight")
-		end
+		end]]--
     },
     {
         "rebelot/kanagawa.nvim",
@@ -28,7 +31,7 @@ return {
                     --light = "lotus",
                 },
             })
+            --vim.cmd("colorscheme kanagawa-lotus")
         end,
     },
-    --vim.cmd("colorscheme kanagawa")
 }

@@ -120,6 +120,7 @@ return {
 		if utils.executable("pylsp") then
 		  local venv_path = os.getenv('VIRTUAL_ENV')
 		  local py_path = nil
+          vim.g.python3_host_prog = "/opt/homebrew/bin/python3"
 		  -- decide which python executable to use for mypy
 		  if venv_path ~= nil then
 		    py_path = venv_path .. "/bin/python3"
