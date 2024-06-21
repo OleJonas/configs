@@ -11,3 +11,4 @@ vim.opt.softtabstop = 4
 vim.g.netrw_keepdir = 0
 
 vim.api.nvim_set_option("clipboard","unnamed")
+vim.keymap.set("x", "p", function() return 'pgv"' .. vim.v.register .. "y" end, { remap = false, expr = true })

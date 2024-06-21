@@ -8,6 +8,7 @@ return {
     },
     keys = {
       { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "Toggle Copilot Chat" },
+      --{ "<C-l>", "<C-w>l",  desc = "Go to Right Window"},
       --{ "<leader>cs", "<cmd>lua require'copilot-chat'.send()<cr>", desc = "Send message" },
       --{ "<leader>cr", "<cmd>lua require'copilot-chat'.send(true)<cr>", desc = "Send message with reply" },
     },

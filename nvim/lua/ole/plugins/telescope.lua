@@ -3,5 +3,15 @@ return {
     keys = {
         {"<leader>tf", "<cmd>Telescope find_files<cr>", desc = "Open telescope file finder"},
         {"<leader>tg", "<cmd>Telescope live_grep<cr>", desc = "Open telescope live_grep"}
-    }
+    },
+
+    config = function()
+        require("telescope").setup({
+            pickers = {
+                find_files = {
+                    hidden = true
+                }
+            }
+        })
+    end
 }

@@ -266,6 +266,27 @@ return {
 		    capabilities = capabilities,
 		  }
 		end
+        
+        -- Terraform lsp
+        if utils.executable("terraform-ls") then
+            lspconfig.terraformls.setup{
+                on_attach = custom_attach,
+                --capabilities = capabilities,
+                capabilities = {
+                    textDocument = {
+                        completion = {
+                            completionItem = {
+                                snippetSupport = false
+                            }
+                        }
+                    }
+                },
+                filetypes = { "terraform", "terraform-vars", "tf", "tfvars" },
+                root_dir = function(dirpath)
+                    return lspconfig.util.root_pattern(".terraform", ".git")(dirpath) or lspconfig.util.find_git_ancestor(dirpath) or lspconfig.util.path.dirname(dirpath)
+                end
+            }
+        end
 
 		-- Change diagnostic signs.
 		fn.sign_define("DiagnosticSignError", { text = '🆇', texthl = "DiagnosticSignError" })
