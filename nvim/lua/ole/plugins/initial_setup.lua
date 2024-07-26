@@ -6,4 +6,5 @@ return {
 	"github/copilot.vim",
 	"eandrju/cellular-automaton.nvim",
     "Vimjas/vim-python-pep8-indent",
+    "echasnovski/mini.icons",
 }

@@ -16,22 +16,22 @@ return {
     },
     {
         "folke/tokyonight.nvim",
-        config = function()
-			vim.cmd("colorscheme tokyonight-storm")
-		end
+        --config = function()
+		--	vim.cmd("colorscheme tokyonight-storm")
+		--end
     },
     {
         "rebelot/kanagawa.nvim",
         name = "kanagawa",
         config = function()
             require("kanagawa").setup({
-                theme = "lotus",
+                theme = "wave",
                 background = {
                     --dark = "dragon", --wave
                     --light = "lotus",
                 },
             })
-            --vim.cmd("colorscheme kanagawa-lotus")
+            vim.cmd("colorscheme kanagawa-wave")
         end,
     },
 }

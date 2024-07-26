@@ -191,11 +191,26 @@ return {
 		if utils.executable("clangd") then
 		  lspconfig.clangd.setup {
 		    on_attach = custom_attach,
-		    capabilities = capabilities,
-		    filetypes = { "c", "cpp", "cc" },
+		    capabilities = {
+                textDocument = {
+                    completion = {
+                        completionItem = {
+                            snippetSupport = false
+                        }
+                    }
+                }
+            },
+            init_options = {
+                fallbackFlags = {'--std=c++20'}
+            },
+            filetypes = { "c", "cpp", "objc", "objcpp" },
 		    flags = {
 		      debounce_text_changes = 500,
 		    },
+            cmd = {
+                "clangd",
+                "--offset-encoding=utf-16",
+            }
 		  }
 		end
 
