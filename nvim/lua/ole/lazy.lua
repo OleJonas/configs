@@ -13,38 +13,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-
---[[local plugin_specs = {
-    -- auto-completion engine
-    {
-        "hrsh7th/nvim-cmp",
-        -- event = 'InsertEnter',
-        event = "VeryLazy",
-        dependencies = {
-          "hrsh7th/cmp-nvim-lsp",
-          "onsails/lspkind-nvim",
-          "hrsh7th/cmp-path",
-          "hrsh7th/cmp-buffer",
-          "hrsh7th/cmp-omni",
-          "hrsh7th/cmp-emoji",
-          "quangnguyen30192/cmp-nvim-ultisnips",
-        },
-        config = function()
-          require("ole.plugins.nvim-cmp")
-        end,
-    },
-
-    {
-        "neovim/nvim-lspconfig",
-        event = { "BufRead", "BufNewFile" },
-        config = function()
-            require("ole.plugins.lsp")
-        end,
-    },
-}]]--
-
---require("lazy").setup(plugin_specs, "ole.plugins")
-
 require("lazy").setup("ole.plugins")
 -- Keymaps
 
@@ -109,3 +77,34 @@ vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 vim.keymap.set({ "n", "v" }, "<leader>cf", function()
   LazyVim.format({ force = true })
 end, { desc = "Format" })
+
+-- diagnostics
+
+--[[vim.api.nvim_create_autocmd({ "CursorHold" }, {
+    pattern = "*",
+    callback = function()
+        for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+            if vim.api.nvim_win_get_config(winid).zindex then
+                return
+            end
+        end
+        vim.diagnostic.open_float({
+            scope = "cursor",
+            focusable = false,
+            close_events = {
+                "CursorMoved",
+                "CursorMovedI",
+                "BufHidden",
+                "InsertCharPre",
+                "WinLeave",
+            },
+        })
+    end
+})]]--
+
+vim.keymap.set(
+    "n",
+    "<leader>i",
+    "<cmd>lua vim.diagnostic.open_float({scope = 'cursor'})<cr>",
+    { desc = "Open diagnostics float without waiting for it to auto pop up" }
+)

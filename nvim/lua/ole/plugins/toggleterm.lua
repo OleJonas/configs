@@ -1,7 +1,7 @@
 return {
 	"akinsho/toggleterm.nvim",
 	version = "*",
-	keys = { { "<C-t>", "<cmd>ToggleTerm<cr>", desc = "Toggle floating terminal" } },
+	--keys = { { "<C-t>", "<cmd>ToggleTerm<cr>", desc = "Toggle floating terminal" } },
 	opts = {
 		direction = "horizontal",
 		shade_filetypes = {},

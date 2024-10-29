@@ -22,6 +22,8 @@ return {
 		  vim.cmd[[copen]]
 		end
 
+        
+
 		local custom_attach = function(client, bufnr)
 		  -- Mappings.
 		  local map = function(mode, l, r, opts)
@@ -111,19 +113,37 @@ return {
 		    local msg = string.format("Language server %s started!", client.name)
 		    vim.notify(msg, vim.log.levels.DEBUG, { title = "Nvim-config" })
 		  end
+
+          -- Set up support for installing new packages while still in the LSP server
+          -- Should fix issue where LSP not picking up new installs / imports etc...
+          workspace.didChangeWatchedFiles.dynamicRegistration=true
+
 		end
 
 		local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 		local lspconfig = require("lspconfig")
 
+        lspconfig.rust_analyzer.setup {
+            settings = {
+                ['rust-analyzer'] = {
+                    check = {
+                        command = "clippy";
+                    },
+                    diagnostics = {
+                        enable = true;
+                    }
+                }
+            }
+        }
+
 		if utils.executable("pylsp") then
 		  local venv_path = os.getenv('VIRTUAL_ENV')
 		  local py_path = nil
-          vim.g.python3_host_prog = "/opt/homebrew/bin/python3"
+          vim.g.python3_host_prog = "/opt/homebrew/bin/python3.12"
 		  -- decide which python executable to use for mypy
 		  if venv_path ~= nil then
-		    py_path = venv_path .. "/bin/python3"
+		    py_path = venv_path .. "/opt/homebrew/bin/python3.12"
 		  else
 		    py_path = vim.g.python3_host_prog
 		  end
@@ -187,32 +207,58 @@ return {
 		    flags = { debounce_text_changes = 300 },
 		}
 		end
+        
+        if utils.executable("clangd") then
 
-		if utils.executable("clangd") then
-		  lspconfig.clangd.setup {
-		    on_attach = custom_attach,
-		    capabilities = {
-                textDocument = {
-                    completion = {
-                        completionItem = {
-                            snippetSupport = false
+            lspconfig.clangd.setup {
+                on_attach = custom_attach,
+                capabilities = {
+                    offsetEncoding = { "utf-16" },
+                    textDocument = {
+                        completion = {
+                            completionItem = {
+                                snippetSupport = false
+                            }
                         }
                     }
-                }
-            },
-            init_options = {
-                fallbackFlags = {'--std=c++20'}
-            },
-            filetypes = { "c", "cpp", "objc", "objcpp" },
-		    flags = {
-		      debounce_text_changes = 500,
-		    },
-            cmd = {
-                "clangd",
-                "--offset-encoding=utf-16",
+                },
+                init_options = {
+                    usePlaceholders = true,
+                    completeUnimported = true,
+                    clangdFileStatus = true,
+                },
+                filetypes = { "cpp", "objcpp", "c", "objc" },
+                flags = {
+                    debounce_text_changes = 500,
+                },
+                cmd = {
+                    "clangd",
+                    "--background-index",
+                    "--clang-tidy",
+                    "--header-insertion=iwyu",
+                    "--completion-style=detailed",
+                    "--function-arg-placeholders",
+                    "--fallback-style=llvm",
+                    --"--query-driver=/opt/homebrew/Cellar/llvm/19.1.2/include/c++/v1"
+                },
+                keys = {
+                    { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+                },
+                root_dir = function(fname)
+                    return require("lspconfig.util").root_pattern(
+                    "Makefile",
+                    "configure.ac",
+                    "configure.in",
+                    "config.h.in",
+                    "meson.build",
+                    "meson_options.txt",
+                    "build.ninja"
+                    )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
+                    fname
+                    ) or require("lspconfig.util").find_git_ancestor(fname)
+                end,
             }
-		  }
-		end
+        end
 
 		-- set up vim-language-server
 		if utils.executable("vim-language-server") then
@@ -227,6 +273,7 @@ return {
 		  vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 		end
 
+
 		-- set up bash-language-server
 		if utils.executable("bash-language-server") then
 		  lspconfig.bashls.setup {
@@ -235,13 +282,16 @@ return {
 		  }
 		end
 
-        lspconfig.gopls.setup{
-            on_attach = custom_attach,
-            filetypes = { "go", "gomod", "gowork", "gotmpl"}
-        }
+
+        if utils.executable("gopls") then
+            lspconfig.gopls.setup{
+                on_attach = custom_attach,
+                filetypes = { "go", "gomod", "gowork", "gotmpl"}
+            }
+        end
 
         if utils.executable("typescript-language-server") then
-            lspconfig.tsserver.setup{
+            lspconfig.ts_ls.setup{
                 on_attach = custom_attach,
                 settings = {
                     completions = {
@@ -250,6 +300,23 @@ return {
                 }
             }
         end
+        --[[
+        if utils.executable("rust-analyzer") then
+            lspconfig.rust_analyzer.setup{
+                on_attach = custom_attach,
+                settings = {
+                    ["rust-analyzer"] = {
+                        check = {
+                            command = "clippy";
+                        },
+                        diagnostics = {
+                            enable = true;
+                        }
+                    }
+                },
+                capabilities = capabilities,
+            }
+        end]]--
 
 		if utils.executable("lua-language-server") then
 		  -- settings for lua-language-server can be found on https://github.com/LuaLS/lua-language-server/wiki/Settings .
