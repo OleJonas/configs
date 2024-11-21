@@ -31,11 +31,14 @@ return {
                 timeout = 500,
             },
 
+            view = {
+                preserve_window_proportions = false,
+            },
            
             actions = {
                 --
                 open_file = {
-                    resize_window = true,
+                    resize_window = false,
                     --
                 },
             
